@@ -1,0 +1,37 @@
+# --- Rust build artifacts ---
+/target
+**/*.rs.bk
+*.pdb
+
+# --- DubRust runtime data (created next to the video) ---
+*.dubrust/
+master_mix_*.wav
+/data
+
+# --- Downloaded on demand, never committed ---
+# HT-Demucs weights (~166 MB) and ONNX Runtime are fetched at runtime
+/models/htdemucs*
+/bin
+onnxruntime.dll
+ort_temp.zip
+*.download
+
+# --- Logo master art (4.6 MB source PSD-like export) ---
+# Tracked derivatives: assets/logo.png, assets/logo-large.png,
+# assets/icon-{16,32,48,64,128,256}.png, assets/icon.ico
+assets/icon.png
+
+# --- Local scratch / debug output ---
+*.log
+test_whisper.json
+/scratch
+/out
+
+# --- OS & editors ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~

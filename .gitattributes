@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.rs   text eol=lf
+*.toml text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.json text eol=lf
+
+*.png  binary
+*.ico  binary
+*.wav  binary
+*.onnx binary
+
+# Keep the bundled VAD model out of language statistics
+models/** linguist-vendored
+assets/** linguist-vendored

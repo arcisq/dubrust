@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an improvement to the dubbing workflow
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like DubRust to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why does it matter for dubbing?
+      description: Describe the workflow it unblocks or the time it saves.
+  - type: checkboxes
+    id: license
+    attributes:
+      label: Licensing
+      options:
+        - label: My idea does not require bundling GPL-incompatible code or model weights
+          required: false

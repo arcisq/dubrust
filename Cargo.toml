@@ -1,0 +1,39 @@
+[package]
+name = "dubrust"
+version = "0.1.0"
+edition = "2021"
+description = "Студия дубляжа и переозвучки видео: автонарезка фраз, запись дублей, сведение и экспорт"
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+keywords = ["dubbing", "video", "audio", "vad", "egui"]
+categories = ["multimedia::audio", "multimedia::video"]
+
+[lib]
+name = "dubrust"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dubrust"
+path = "src/main.rs"
+
+[dependencies]
+eframe = { version = "0.29", default-features = false, features = ["default", "glow"] }
+egui = "0.29"
+cpal = "0.15"
+rodio = { version = "0.19", default-features = false, features = ["wav", "vorbis", "flac", "mp3"] }
+hound = "3.5"
+rfd = "0.15"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+crossbeam-channel = "0.5"
+tempfile = "3.10"
+anyhow = "1.0"
+tract-onnx = "0.21.8"
+ureq = { version = "2.10", features = ["json"] }
+ort = { version = "2.0.0-rc.9", default-features = false, features = ["load-dynamic", "half", "ndarray"] }
+zip = { version = "2.2", default-features = false, features = ["deflate"] }
+
+[target.'cfg(windows)'.build-dependencies]
+winres = "0.1"
+

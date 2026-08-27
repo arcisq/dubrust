@@ -1,0 +1,34 @@
+name: Bug report
+description: Something crashes, sounds wrong, or slices badly
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open video X
+        2. Slice with sensitivity Y
+        3. Record a take on phrase 3
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Phrase slicing (VAD)
+        - Recording / playback
+        - Mixing / export
+        - HT-Demucs background separation
+        - Timeline / UI
+        - Other
+    validations:
+      required: true
