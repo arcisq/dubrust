@@ -1,0 +1,5 @@
+# Статически линкуем MSVC-рантайм: готовый dubrust.exe запускается на чистой
+# Windows без установки Visual C++ Redistributable. Для инсталлера и портативной
+# сборки это критично — иначе пользователь получает ошибку про VCRUNTIME140.dll.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

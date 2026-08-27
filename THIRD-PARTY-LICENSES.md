@@ -69,3 +69,13 @@ cargo install cargo-about   # генерация полного списка т�
 cargo install cargo-deny    # проверка политики лицензий в CI
 cargo deny check licenses
 ```
+
+## Binaries redistributed in the Windows installer and portable archive
+
+| Component | Version | License | Notes |
+|---|---|---|---|
+| `ffmpeg.exe`, `ffprobe.exe` | static "essentials" build from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) | GPL-3.0 | Unmodified upstream binaries. DubRust never links them: they are launched as separate processes over the command line, which is mere aggregation, not a combined work. The full license text ships as `LICENSE-ffmpeg.txt` next to the executable, and the build sources are published at the link above. |
+
+Nothing else is bundled. HT-Demucs weights and ONNX Runtime are downloaded by the user on demand
+and stay subject to their own licenses; the FireRedVAD model committed in `models/` is embedded at
+compile time and covered by the entry above in this file.

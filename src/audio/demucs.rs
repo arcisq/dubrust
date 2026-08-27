@@ -22,6 +22,11 @@ pub const ONNXRUNTIME_DLL_FILENAME: &str = "onnxruntime.dll";
 static ORT_INIT: OnceLock<Result<(), String>> = OnceLock::new();
 
 pub fn get_app_dir() -> PathBuf {
+    // Портативная сборка держит веса и DLL рядом с собой, а не в %APPDATA%.
+    if let Some(dir) = crate::util::portable_data_dir() {
+        return dir;
+    }
+
     if let Ok(appdata) = std::env::var("APPDATA") {
         let p = PathBuf::from(appdata).join("dubrust");
         let _ = std::fs::create_dir_all(&p);

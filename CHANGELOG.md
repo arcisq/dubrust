@@ -25,6 +25,16 @@ First public release.
   (WSOLA time-stretch without pitch shift).
 - Full English and Russian UI localization with automatic system-language detection.
 - Autosave, project restore, take trash with `Ctrl+Z` undo, take remapping after re-slicing.
+- Windows installer (Inno Setup, EN/RU wizard): per-user install without admin rights,
+  Start menu and desktop shortcuts, uninstaller entry, bundled `ffmpeg`/`ffprobe`.
+- Portable build: a `portable.txt` marker keeps model weights, ONNX Runtime and settings in
+  `./data` next to the executable and writes nothing to `%APPDATA%` or the registry.
+- External tools are now resolved next to the executable (and in `./ffmpeg/bin`) before
+  falling back to `PATH`, so shipped builds work without any system configuration.
+- Static MSVC runtime linking: the binary runs on a clean Windows without
+  Visual C++ Redistributable.
+- `scripts/package.ps1` builds every release artifact in one go (portable archive,
+  installer, `SHA256SUMS.txt`) and caches the static ffmpeg download.
 
 ### Fixed
 

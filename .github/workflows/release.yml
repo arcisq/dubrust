@@ -4,6 +4,11 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to package (without the leading v)"
+        required: true
+        default: "0.1.0"
 
 permissions:
   contents: write
@@ -13,7 +18,7 @@ env:
 
 jobs:
   windows:
-    name: Windows x64 build
+    name: Windows x64 installer and portable build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,37 +29,39 @@ jobs:
       - name: Cache cargo artifacts
         uses: Swatinem/rust-cache@v2
 
-      - name: Build release binary
-        run: cargo build --release
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
 
-      - name: Package archive
+      - name: Resolve version
+        id: version
         shell: pwsh
         run: |
-          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME } else { 'dev' }
-          $dir = "dubrust-$version-windows-x64"
-          New-Item -ItemType Directory -Path $dir | Out-Null
-          Copy-Item target/release/dubrust.exe $dir/
-          Copy-Item README.md, CHANGELOG.md, LICENSE, THIRD-PARTY-LICENSES.md $dir/
-          Compress-Archive -Path "$dir/*" -DestinationPath "$dir.zip"
-          "ARCHIVE=$dir.zip" | Out-File -FilePath $env:GITHUB_ENV -Append
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') {
+            $env:GITHUB_REF_NAME -replace '^v', ''
+          } else {
+            '${{ github.event.inputs.version }}'
+          }
+          "value=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Upload build artifact
+      - name: Build installer, portable archive and checksums
+        shell: pwsh
+        run: ./scripts/package.ps1 -Version ${{ steps.version.outputs.value }}
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARCHIVE }}
-          path: ${{ env.ARCHIVE }}
+          name: dubrust-${{ steps.version.outputs.value }}-windows-x64
+          path: |
+            dist/*.zip
+            dist/*setup.exe
+            dist/SHA256SUMS.txt
 
       - name: Publish GitHub release
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ARCHIVE }}
+          files: |
+            dist/*.zip
+            dist/*setup.exe
+            dist/SHA256SUMS.txt
           generate_release_notes: true
-          body: |
-            **DubRust ${{ github.ref_name }}** - dubbing and voice-over studio written in Rust.
-
-            Download the archive below, unpack it, make sure `ffmpeg` and `ffprobe` are in `PATH`,
-            and run `dubrust.exe`. Model weights for HT-Demucs are not bundled: the app downloads
-            them on demand only if you enable clean-BGM separation.
-
-            See `CHANGELOG.md` for the full list of changes.

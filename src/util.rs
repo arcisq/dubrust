@@ -1,9 +1,70 @@
+use std::path::PathBuf;
 use std::process::Command;
+
+/// Каталог, в котором лежит сам исполняемый файл.
+pub fn exe_dir() -> Option<PathBuf> {
+    std::env::current_exe()
+        .ok()?
+        .parent()
+        .map(|dir| dir.to_path_buf())
+}
+
+/// Портативный режим: рядом с exe лежит файл-маркер `portable.txt`.
+/// В этом режиме приложение не трогает %APPDATA% и реестр — всё своё
+/// хранит внутри собственной папки, поэтому его можно носить на флешке.
+pub fn is_portable() -> bool {
+    exe_dir()
+        .map(|dir| dir.join("portable.txt").is_file())
+        .unwrap_or(false)
+}
+
+/// Каталог данных для портативной сборки: `./data` рядом с exe.
+/// Возвращает `None`, если сборка обычная (установленная).
+pub fn portable_data_dir() -> Option<PathBuf> {
+    if !is_portable() {
+        return None;
+    }
+    let dir = exe_dir()?.join("data");
+    std::fs::create_dir_all(&dir).ok()?;
+    Some(dir)
+}
+
+/// Найти внешнюю утилиту (ffmpeg/ffprobe).
+///
+/// Сначала смотрим рядом с exe и в `./ffmpeg/bin` — туда их кладут инсталлер
+/// и портативный архив, чтобы пользователю не пришлось ничего настраивать.
+/// Если не нашли — отдаём просто имя, и его подхватит системный PATH.
+pub fn resolve_tool(program: &str) -> PathBuf {
+    if program.contains('/') || program.contains('\\') {
+        return PathBuf::from(program);
+    }
+
+    let file_name = if cfg!(windows) && !program.ends_with(".exe") {
+        format!("{program}.exe")
+    } else {
+        program.to_string()
+    };
+
+    if let Some(dir) = exe_dir() {
+        let candidates = [
+            dir.join(&file_name),
+            dir.join("ffmpeg").join(&file_name),
+            dir.join("ffmpeg").join("bin").join(&file_name),
+        ];
+        for candidate in candidates {
+            if candidate.is_file() {
+                return candidate;
+            }
+        }
+    }
+
+    PathBuf::from(program)
+}
 
 /// Создать команду без всплывающего консольного окна на Windows.
 /// Без этого каждый вызов ffmpeg моргает чёрным окном поверх приложения.
 pub fn hidden_command(program: &str) -> Command {
-    let mut cmd = Command::new(program);
+    let mut cmd = Command::new(resolve_tool(program));
     #[cfg(windows)]
     {
         use std::os::windows::process::CommandExt;

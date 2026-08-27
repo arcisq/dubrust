@@ -35,3 +35,6 @@ Desktop.ini
 .vscode/
 *.swp
 *~
+
+# Release artifacts produced by scripts/package.ps1
+/dist

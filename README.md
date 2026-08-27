@@ -55,14 +55,30 @@ Desktop application written in Rust + egui for video dubbing: automatic speech s
 ## Requirements
 
 - Windows / Linux / macOS with audio input and output.
-- `ffmpeg` and `ffprobe` in `PATH` — required (audio extraction, frame pumping, multiplexing).
+- `ffmpeg` and `ffprobe` — required for audio extraction, frame pumping and multiplexing.
+  **The Windows installer and the portable archive already ship them**, so there is nothing to set up;
+  they are only needed in `PATH` when you build from source.
+- No Visual C++ Redistributable required: the binary links the MSVC runtime statically.
 - Built-in FireRedVAD runs in 100% pure Rust without Python or external runtime dependencies.
 
 ## Download
 
-Grab the latest Windows build from the [Releases page](https://github.com/arcisq/dubrust/releases/latest):
-unpack the archive, make sure `ffmpeg` is in `PATH`, and run `dubrust.exe`.
-No installer, no telemetry, no bundled model weights.
+Both Windows builds live on the [Releases page](https://github.com/arcisq/dubrust/releases/latest).
+`SHA256SUMS.txt` next to them lets you verify what you downloaded.
+
+| | Installer | Portable |
+|---|---|---|
+| File | `DubRust-<version>-windows-x64-setup.exe` | `dubrust-<version>-windows-x64-portable.zip` |
+| Setup | Wizard (EN/RU), Start menu and desktop shortcuts, proper uninstaller | Unpack anywhere and run `dubrust.exe` |
+| Rights | Per-user install, no admin needed | None |
+| ffmpeg | Bundled | Bundled |
+| Where data lives | `%APPDATA%\dubrust` (downloaded HT-Demucs weights, ONNX Runtime) | `./data` next to the executable, nothing in the registry |
+
+Portable mode is switched on by the `portable.txt` marker file shipped inside the archive — delete it
+if you would rather keep settings and weights in the per-user location. Windows SmartScreen may warn
+about an unknown publisher: the binaries are not code-signed yet, so compare the SHA256 sum if in doubt.
+
+No telemetry, no bundled neural weights: HT-Demucs is downloaded only if you enable clean-BGM separation.
 
 ## Build from source
 
