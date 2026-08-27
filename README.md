@@ -143,7 +143,7 @@ All heavy work (ffmpeg, VAD, HT-Demucs inference, mixing) runs in a background w
 
 DubRust is free software under the **GNU Affero General Public License v3.0 or later** (`AGPL-3.0-or-later`). Full text is in the [LICENSE](LICENSE) file.
 
-Copyright (C) 2026 brawrel228
+Copyright (C) 2026 Arcis (arcisq)
 
 What this means in practice:
 - Anyone can use, study, modify, and distribute the code.

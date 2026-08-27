@@ -2,6 +2,9 @@
 name = "dubrust"
 version = "0.1.0"
 edition = "2021"
+authors = ["Arcis (arcisq)"]
+repository = "https://github.com/arcisq/dubrust"
+homepage = "https://github.com/arcisq/dubrust"
 description = "Студия дубляжа и переозвучки видео: автонарезка фраз, запись дублей, сведение и экспорт"
 license = "AGPL-3.0-or-later"
 readme = "README.md"
